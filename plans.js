@@ -3,12 +3,12 @@ const router = express.Router();
 const axios = require('axios')
 require('dotenv').config()
 
-const runEvent = async (req, res, type, successMessage) => {
+const runEvent = async (res, type, successMessage) => {
     if (!process.env.GITHUB_TOKEN) {
         res.send("GITHUB TOKEN not found");
     } else {
         const body = {
-            event_type: 'rebuildprod'
+            event_type: type
         };
         const options = {
             headers: {
@@ -21,41 +21,17 @@ const runEvent = async (req, res, type, successMessage) => {
             body,
             options
         );
-        res.send('rebuilding');
+        res.send(successMessage);
     }
 }
 
 
 router.route("/rebuildprod").get(async (req, res) => {
-    if (!process.env.GITHUB_TOKEN) {
-        res.send("GITHUB TOKEN not found");
-    } else {
-        const body = {
-            event_type: 'rebuildprod'
-        };
-        await axios.post(
-            "https://api.github.com/repos/feature-checker/feature-checker/dispatches",
-            body,
-            options
-        );
-        res.send('rebuilding');
-    }
+    runEvent(res, 'rebuildprod', 'rebuilding');
 });
 
 router.route("/runtests").get(async (req, res) => {
-    if (!process.env.GITHUB_TOKEN) {
-        res.send("GITHUB TOKEN not found");
-    } else {
-        const body = {
-            event_type: 'runtests'
-        };
-        await axios.post(
-            "https://api.github.com/repos/feature-checker/feature-checker/dispatches",
-            body,
-            options
-        );
-        res.send('run testing');
-    }
+    runEvent(res, 'runtests', 'run testing');
 });
 
 module.exports = router;
