@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const axios = require('axios')
+require('dotenv').config()
 
 const runEvent = async (req, res, type, successMessage) => {
     if (!process.env.GITHUB_TOKEN) {
